@@ -8,7 +8,7 @@ html body{
 
 #grid{
     display: grid;
-    grid-template-columns: 200px 1fr 200px;
+    grid-template-columns: 250px 1fr 250px;
     grid-template-rows: 1fr 1fr 1fr;
     height: 90%;
     padding: 25px;
@@ -68,7 +68,9 @@ nav button{
 }
 .square{
     height: 120px;
+    font-size: 4em;
 }
+
 
 .squareRow1{
     grid-row: 1/1;
@@ -94,7 +96,7 @@ nav button{
 .squareCol3{
     grid-column: 3/3;
 }
-
+    
 
 
 
@@ -109,6 +111,10 @@ nav button{
     justify-content: center;
     align-items: stretch;
     padding: 0 25px;
+}
+#results div{
+    height:50px;
+    font-size: 2em;
 }
 #version{
     position: fixed;
