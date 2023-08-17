@@ -57,8 +57,18 @@ nav button{
     text-align: center;
     grid-row: 1/ 3;
     padding: 0 15%;
+
 }
+
+
 /* Tic Tac Board */
+.inactive{
+    pointer-events: none;
+}
+.winningSquares{
+    box-shadow: #000000 0px 2px 20px 1px;
+    
+}
 #ticTacBoard{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
@@ -69,6 +79,9 @@ nav button{
 .square{
     height: 120px;
     font-size: 4em;
+}
+.square:hover{
+    box-shadow: inset 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
 }
 
 

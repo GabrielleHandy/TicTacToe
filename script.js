@@ -1,7 +1,4 @@
-//Tic tac toe grid
-const ticTacToe = document.querySelector("#ticTacBoard")
-const winner = document.createElement("div")
-const result = document.querySelector("#results")
+//------------------CLASSSES-------------
 class Player{
     constructor(playerNum, name = ""){
         this.name =name
@@ -36,7 +33,7 @@ class Player{
         return this.stats
     }
 }
-    
+
 class Square {
     constructor(column, row){
         //column and row will tell where location is
@@ -51,16 +48,20 @@ class Square {
     }
     claimSquare(player){
         
-            this.player = player
+        this.player = player
         
     }
+    reset(){
+        this.player = 0
+        this.element.innerText = ""
+    }
 
-    
+    //Checking for wins based on this squares location
     checkColumn(board,row=this.row, column=this.column){
         let up = row - 1
         let down = row + 1
         
-            // Based on rows up and down
+        // Based on rows up and down
         if (row === 1) {
             this.squarebyRowCol(down, column, board)
             let downPlayer = this.currentSquare.player
@@ -70,6 +71,7 @@ class Square {
                 return this.checkColumn(board, down, column)
             }
             else{
+                winningSquares = []
                 return false
             }
             // This is where a match will be determined because its double checking the top and bottom squares for a match
@@ -83,6 +85,7 @@ class Square {
                 return true
             
             }
+            winningSquares = []
             return false
         }
         else{
@@ -92,14 +95,13 @@ class Square {
             if (upPlayer === this.player) {
                 return this.checkColumn(board,up, column)
             }
+            winningSquares = []
             return false
         }
         
-    
-
+        
+        
     }
-
-
     checkRow(board,row=this.row, column=this.column){
         let left = column -1
         let right = column + 1
@@ -114,18 +116,20 @@ class Square {
                 // recursive function to get to column 2
                 return this.checkRow(board, row, right)
             }
+            winningSquares = []
             return false
-
+            
         }else if(column===2){
             //in column 2 I look to the left and right to double check
-
+            
             this.squarebyRowCol(row, left, board)
             let leftPlayer = this.currentSquare.player
             this.squarebyRowCol(row, right, board)
             let rightPlayer = this.currentSquare.player
             if(leftPlayer === this.player && rightPlayer === this.player){
-            return true
+                return true
             }
+            winningSquares = []
             return false
         }
         else{
@@ -136,6 +140,7 @@ class Square {
                 // recursive function to get to column 2
                 return this.checkRow( board,row, left)
             }
+            winningSquares = []
             return false
         }
         
@@ -143,76 +148,80 @@ class Square {
     checkDiagonal(board,row=this.row, column=this.column){
         this.squarebyRowCol(2, 2, board)
         let middleSquare = this.currentSquare
-        const leftDiagonal = [[1,1],[2,2],[3,3]]
-        const rightDiagonal = [[1,3],[2,2],[3,1]]
-
+        
+        
         //for diagonals the sum of the row and columns are even. I also immediately check if player clicked middle
         if(!((row + column) %2 === 0)||middleSquare.player != this.player){
+            winningSquares = []
             return false
-        }else{
-            this.squarebyRowCol(1, 1, board)
-            let upperLeftSquare = this.currentSquare
-            if( upperLeftSquare.player === this.player){
-                this.squarebyRowCol(3, 3, board)
-                let lowerRightSquare = this.currentSquare
-                
-                if (lowerRightSquare.player === this.player) {
-                    return true
-                }
-                
-            }
-            else{
-                
-                this.squarebyRowCol(1, 3, board)
-                let lowerLeftSquare = this.currentSquare
-                if (lowerLeftSquare.player === this.player) {
-                    this.squarebyRowCol(3, 1, board)
-                    let upperRightSquare = this.currentSquare
-                    if (upperRightSquare.player === this.player) {
-                        return true
-                    }
-                }
-            }    
-            return false
-            
         }
-    }
-        
-        
-        
+        //left diagonal
+        this.squarebyRowCol(1, 1, board)
+        let upperLeftSquare = this.currentSquare
+        this.squarebyRowCol(3, 3, board)
+        let lowerRightSquare = this.currentSquare
 
-        
-        
-        
+        //right diagonal
+        this.squarebyRowCol(1, 3, board)
+        let lowerLeftSquare = this.currentSquare
+        this.squarebyRowCol(3, 1, board)
+        let upperRightSquare = this.currentSquare
+
+        if( upperLeftSquare.player === this.player && lowerRightSquare.player === this.player){
+                winningSquares.splice(winningSquares.indexOf(lowerLeftSquare), 1)
+                winningSquares.splice(winningSquares.indexOf(upperRightSquare), 1)
+                return true
+            }
+        else if( lowerLeftSquare.player === this.player && upperRightSquare.player === this.player) {
+
+            winningSquares.splice(winningSquares.indexOf(upperLeftSquare), 1)
+            winningSquares.splice(winningSquares.indexOf(lowerRightSquare), 1)
+
+            return true
+        }else{
 
 
+            winningSquares = []
+            return false
+
+
+        }
+                
+            }   
+            
+        
+    
+        
+    
+        
+    
     squarebyRowCol(row, column, board){
         //used to find squares on the board. uses the holder variable in Square to use throughout methods
         board[row].forEach(squareObj => { 
             if(squareObj.column === column){
-            
-            this.currentSquare =squareObj
-            
-        }
+                this.currentSquare =squareObj
+                if(!winningSquares.includes(squareObj)){
+                    winningSquares.push(squareObj)
+                }
+                
+            }
         })
     }
 
     
-
-
-
+    
+    
+    
 }
 
 class Board{
     constructor(){
-        //if active board can be clicked
-        this.active = true
         //holds squares by row
         this.squares = {1:[], 2:[],3:[]}
         this.selectedSquare
         this.makeBoard()
         
-
+        
         
     }
     makeBoard(){
@@ -226,8 +235,8 @@ class Board{
                 square.element = squareHtml
                 ticTacToe.appendChild(squareHtml)
                 this.squares[`${row}`].push(square)
-        
-
+                
+                
                 //event listener for every square
                 squareHtml.addEventListener("click", ()=>{
                     let squareRow= squareHtml.classList[3]
@@ -243,20 +252,61 @@ class Board{
                 })
         }
     }
-}
-squareByHtml(htmlEl , row){
+    }
+    squareByHtml(htmlEl , row){
     this.squares[row].forEach(squareObj => { 
         if(squareObj.element === htmlEl){
         
         this.selectedSquare =squareObj
         
     }
-        
+    
     })
 }
+    clearBoard(){
+        if(winningSquares){
+            winningSquares.forEach(square=>{
+                square.element.classList.remove("winningSquares")
+            })
+            winningSquares = []
+        }
+        resetBtn.innerText = "Reset Board"
+        ticTacToe.classList.remove("inactive")
+        for (let row in this.squares){
+            this.squares[row].forEach(square =>{
+                square.reset()
+            })
 
+
+        }
+        //removes winner announcement
+        winner.remove()
+    }
+    makeInactive(){
+        ticTacToe.classList.add("inactive")
+        winningSquares.forEach(square=>{
+            square.element.classList.add("winningSquares")
+        })
+    }
 }
+//--------------------INITIALIZED ELEMENTS AND VARIABLE ON GAME START UP -----------
+const ticTacToe = document.querySelector("#ticTacBoard")
+const result = document.querySelector("#results")
+const resetBtn = document.querySelector(".reset")
+const winner = document.createElement("div")
+const announcement = document.createElement("h2")
+const playerOne = new Player(1, "Sarah")
+const playerTwo = new Player(2)
+const playerTurn = document.querySelector("em")
+playerTurn.innerText = playerOne.name? playerOne.name : "Player One"
+!playerOne.name? playerOne.name = "Player One": playerOne.name
+!playerTwo.name? playerTwo.name = "Player Two": playerTwo.name
+const gameBoard= new Board()
+let winningSquares = []
+//------EVENT LISTENERS-------
+resetBtn.addEventListener("click", ()=> {gameBoard.clearBoard()})
 
+//-------------FUNCTIONS------------------------------
 function checkForWin(square, playerobj, squares){
     console.log(square.checkRow(squares),
     square.checkColumn(squares),
@@ -269,37 +319,30 @@ function checkForWin(square, playerobj, squares){
         gameBoard.active = false
         announceWinner(playerobj)
     }
-
+    
 }
-
-const playerOne = new Player(1, "Sarah")
-const playerTwo = new Player(2)
-const playerTurn = document.querySelector("em")
-playerTurn.innerText = playerOne.name? playerOne.name : "Player One"
-!playerOne.name? playerOne.name = "Player One": playerOne.name
-!playerTwo.name? playerTwo.name = "Player Two": playerTwo.name
-const gameBoard= new Board()
-
-
-
 function announceWinner(player) {
-    let announcement = document.createElement("h2")
+    resetBtn.innerText = "Start New Game"
+    gameBoard.makeInactive()
     announcement.innerText = `${player.name} wins!!`
     winner.appendChild(announcement)
-    console.log(winner)
+    
     result.appendChild(winner)
     
+    playerOne.stats["gamesPlayed"]++
+    playerTwo.stats["gamesPlayed"]++
     player.stats["wins"]++
     if(player.playerNum === playerOne.playerNum){
         playerTwo.stats["loss"]++
+        
     }else{
-        playerOne.stats["wins"]++
+        playerOne.stats["loss"]++
     }
     
 }
 function changePlayer() {
-
-
+    
+    
 
     if(playerTurn.id === "playerOne"){
         
