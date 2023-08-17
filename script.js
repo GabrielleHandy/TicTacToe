@@ -149,13 +149,9 @@ class Square {
         //for diagonals the sum of the row and columns are even. I also immediately check if player clicked middle
         if(!((row + column) %2 === 0)||middleSquare.player != this.player){
             return false
-        }
-    
-            
-        if(leftDiagonal.includes([row, column])){
+        }else{
             this.squarebyRowCol(1, 1, board)
             let upperLeftSquare = this.currentSquare
-            
             if( upperLeftSquare.player === this.player){
                 this.squarebyRowCol(3, 3, board)
                 let lowerRightSquare = this.currentSquare
@@ -164,24 +160,24 @@ class Square {
                     return true
                 }
                 
+            }
+            else{
                 
-            }
-            }
-        if(rightDiagonal.includes([row, column])){
-            this.squarebyRowCol(1, 3, board)
-            let lowerLeftSquare = this.currentSquare
-            if (lowerLeftSquare.player === this.player) {
-                this.squarebyRowCol(3, 1, board)
-                let upperRightSquare = this.currentSquare
-                if (upperRightSquare.player === this.player) {
-                    return true
+                this.squarebyRowCol(1, 3, board)
+                let lowerLeftSquare = this.currentSquare
+                if (lowerLeftSquare.player === this.player) {
+                    this.squarebyRowCol(3, 1, board)
+                    let upperRightSquare = this.currentSquare
+                    if (upperRightSquare.player === this.player) {
+                        return true
+                    }
                 }
-                    return false
-                }
-            }
+            }    
+            return false
             
-            }
-            
+        }
+    }
+        
         
         
 
