@@ -14,19 +14,39 @@ html body{
     align-items: center;
 }
 /* Buttons */
+.openRight{
+    animation: moveToRight ease;
+    animation-duration: .35s;
+    animation-fill-mode: forwards;
+}
+
+.closeLeft{
+    animation: moveToLeft ease;
+    animation-duration: .35s;
+    animation-fill-mode: forwards;
+
+}
+.mainBtn{
+    transform: translateY(-9px);
+    font-size: 25px;
+}
+
 #option-history{
     display: flex;
     flex-direction: row;
     height: 100%;
 }
     
-#optionMenu{
-    margin-left: -25px;
+#optionMenu, #historyMenu{
+    
     height: 100%;
+    position: fixed;
+    left: 0;
 }
-#Options, #Options .card{
+    
+#Options, #Options .card, #History, #History .card{
     height: 100%;
-    z-index: 3;
+    
 }
 nav{
     position: fixed;
@@ -36,14 +56,14 @@ nav{
     bottom: 50%;
 }
 
-nav button{
-    background-color: #3567b2;
-    font-size: 25px;
+#option-history button{
+    border: 2px solid beige;
+    background-color: black;
+    border-radius: 37px 37px 0 0;
     width: 126px;
     height: 77px;
     color: whitesmoke;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px
+    
 }
 
 
@@ -139,5 +159,18 @@ nav button{
 }
 /* animations */
 
-
+@keyframes moveToRight {
+    to{
+        transform:translateY(-300px)
+    }
+}
+@keyframes moveToLeft {
+    from{
+        transform:translateY(-300px)
+    }
+    
+    to{
+        transform:translateY(0px)
+    }
+}
 

@@ -247,7 +247,7 @@ class Board{
                     let player = changePlayer()
 
                     this.selectedSquare.claimSquare(player.playerNum)
-                    squareHtml.innerText = player.icon
+                    squareHtml.innerHTML = player.icon
                     checkForWin(this.selectedSquare, player, this.squares)
                 })
         }
@@ -258,11 +258,9 @@ class Board{
         if(squareObj.element === htmlEl){
         
         this.selectedSquare =squareObj
-        
+        }
+        })
     }
-    
-    })
-}
     clearBoard(){
         if(winningSquares){
             winningSquares.forEach(square=>{
@@ -295,6 +293,13 @@ const result = document.querySelector("#results")
 const resetBtn = document.querySelector(".reset")
 const winner = document.createElement("div")
 const announcement = document.createElement("h2")
+// Variables for menu
+
+const optionsBtn = document.querySelector("#optionBtn")
+const historyBtn = document.querySelector("#historyBtn")
+const navBar = document.querySelector("nav")
+
+
 const playerOne = new Player(1, "Sarah")
 const playerTwo = new Player(2)
 const playerTurn = document.querySelector("em")
@@ -305,6 +310,31 @@ const gameBoard= new Board()
 let winningSquares = []
 //------EVENT LISTENERS-------
 resetBtn.addEventListener("click", ()=> {gameBoard.clearBoard()})
+optionsBtn.addEventListener("click",()=>{
+
+    
+    if(historyBtn.classList.contains("mainBtn")){
+        historyBtn.click()
+        setTimeout(()=>{moveNav(optionsBtn)}, 50)
+        return
+    }
+    
+    moveNav(optionsBtn)
+    
+})
+historyBtn.addEventListener("click",()=>{
+
+    
+    if(optionsBtn.classList.contains("mainBtn")){
+        optionsBtn.click()
+        setTimeout(()=>{moveNav(historyBtn)}, 350)
+        return
+    }
+    
+    moveNav(historyBtn)
+    
+} )
+
 
 //-------------FUNCTIONS------------------------------
 function checkForWin(square, playerobj, squares){
@@ -357,6 +387,26 @@ function changePlayer() {
     
 }
 
+function moveNav(button) {
+    let optionsWindow = document.querySelector("#Options")
+    if(optionsWindow.classList.contains("collapse-horizontal")){
+        
+        if(navBar.classList.contains("openRight")){
+            navBar.classList.remove("openRight")
+            navBar.classList.add("closeLeft")
+            console.log(button===historyBtn)
+            button===historyBtn?historyBtn.classList.remove("mainBtn"):optionsBtn.classList.remove("mainBtn")
+        }else{
+            
+            navBar.classList.remove("closeLeft")
+            navBar.classList.add("openRight")
+            button===historyBtn?historyBtn.classList.add("mainBtn"):optionsBtn.classList.add("mainBtn")
+
+
+        }
+    }
+
+}
 
 
 

@@ -12,16 +12,27 @@
     <div id="option-history">
         <nav id="option-historyBtns">
             <button id="optionBtn" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Options" aria-expanded="false" aria-controls="Options">option</button>
-            <button id="historyBtn">history</button>
+            <button id="historyBtn"class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#History" aria-expanded="false" aria-controls="History">history</button>
         </nav>
         <div id="optionMenu">
             <div class="collapse collapse-horizontal" id="Options">
                 <div class="card card-body" style="width: 300px;">
-                    This is some placeholder content for a horizontal collapse. It's hidden by default and shown when triggered.
+                    <h2>Options</h2>
+                    <div id="backgroundColor"><div>color choice</div></div>
                 </div>
         </div>
-        <div id="history">
-
+        <div id="historyMenu">
+            <div class="collapse collapse-horizontal" id="History">
+                <div class="card card-body" style="width: 300px;">
+                    <h2>Game History</h2>
+                    <div id="player1"><h3><span id="player1Name"></span>'s Stats</h3>
+                    <table></table>
+                    
+                    </div>
+                    <div id="player2"><h3><span id="player2Name"></span>'s Stats</h3></div>
+                    
+                </div>
+        </div>
         </div>
         </div>
     </div>
@@ -31,7 +42,7 @@
         <div id="ticTacBoard"></div>
     </div>
     <div id="results">
-        <h3 id="version">Version: <span id="versionType">Classic</span></h3>
+        
         <button class="reset">Reset board</button>
     </div>
 </div>
