@@ -4,8 +4,10 @@ class Player{
         this.name =name
         this.playerNum = playerNum
         this.icon
-        this.stats = {win:0, loss: 0}
+        this.stats = {win:0, loss: 0, gamesPlayed:0}
+        this.statElements
         this.setIcon()
+
         
     }
     setIcon(){
@@ -28,9 +30,19 @@ class Player{
         } else {
             this.stats.lose++
         }
+        this.stats.gamesPlayed++
+
+        this.updateStats
+
+        this.displaySta
+        
     }
     displayStats(){
-        return this.stats
+        
+        this.statElements[0].innerText = this.stats.win
+        this.statElements[1].innerText = this.stats.loss
+        this.statElements[2].innerText = this.stats.gamesPlayed
+        
     }
 }
 
@@ -82,6 +94,8 @@ class Square {
             let downPlayer = this.currentSquare.player
             if(upPlayer === this.player && downPlayer === this.player){
                 
+                this.squarebyRowCol(this.row, this.column, board)
+                winningSquares.push(this.currentSquare)
                 return true
             
             }
@@ -105,6 +119,8 @@ class Square {
     checkRow(board,row=this.row, column=this.column){
         let left = column -1
         let right = column + 1
+        //adds this instance to the winning array
+
         //checks left and right squares to see if the player clicked them or not
         
         if (column === 1) {
@@ -127,8 +143,12 @@ class Square {
             this.squarebyRowCol(row, right, board)
             let rightPlayer = this.currentSquare.player
             if(leftPlayer === this.player && rightPlayer === this.player){
+
+                this.squarebyRowCol(this.row, this.column, board)
+                winningSquares.push(this.currentSquare)
                 return true
             }
+            
             winningSquares = []
             return false
         }
@@ -220,7 +240,7 @@ class Board{
         this.squares = {1:[], 2:[],3:[]}
         this.selectedSquare
         this.makeBoard()
-        
+        this.clearBoard("set")
         
         
     }
@@ -275,7 +295,7 @@ class Board{
                 square.reset()
             })
 
-
+            changePlayer("reset")
         }
         //removes winner announcement
         winner.remove()
@@ -293,21 +313,39 @@ const result = document.querySelector("#results")
 const resetBtn = document.querySelector(".reset")
 const winner = document.createElement("div")
 const announcement = document.createElement("h2")
-// Variables for menu
+let winningSquares = []
 
+const player1Wins = document.querySelector("#player1Wins")
+const player1loss = document.querySelector("#player1Loss")
+const player1totalGames = document.querySelector("#totalGames1")
+
+const player2Wins = document.querySelector("#player2Wins")
+const player2loss = document.querySelector("#player2Loss")
+const player2totalGames = document.querySelector("#totalGames2")
+
+// Variables for menu
 const optionsBtn = document.querySelector("#optionBtn")
 const historyBtn = document.querySelector("#historyBtn")
 const navBar = document.querySelector("nav")
 
 
-const playerOne = new Player(1, "Sarah")
+const playerOne = new Player(1)
 const playerTwo = new Player(2)
+
 const playerTurn = document.querySelector("em")
-playerTurn.innerText = playerOne.name? playerOne.name : "Player One"
+
+playerOne.statElements = [player1Wins,player1loss,player1totalGames]
+playerTwo.statElements = [player2Wins,player2loss,player2totalGames]
+playerOne.displayStats()
+playerTwo.displayStats()
+
 !playerOne.name? playerOne.name = "Player One": playerOne.name
 !playerTwo.name? playerTwo.name = "Player Two": playerTwo.name
+
+
+
+
 const gameBoard= new Board()
-let winningSquares = []
 //------EVENT LISTENERS-------
 resetBtn.addEventListener("click", ()=> {gameBoard.clearBoard()})
 optionsBtn.addEventListener("click",()=>{
@@ -327,7 +365,7 @@ historyBtn.addEventListener("click",()=>{
     
     if(optionsBtn.classList.contains("mainBtn")){
         optionsBtn.click()
-        setTimeout(()=>{moveNav(historyBtn)}, 350)
+        setTimeout(()=>{moveNav(historyBtn)}, 50)
         return
     }
     
@@ -359,20 +397,22 @@ function announceWinner(player) {
     
     result.appendChild(winner)
     
-    playerOne.stats["gamesPlayed"]++
-    playerTwo.stats["gamesPlayed"]++
-    player.stats["wins"]++
+    player.updateStats("w")
     if(player.playerNum === playerOne.playerNum){
-        playerTwo.stats["loss"]++
-        
+        playerTwo.updateStats("L")
     }else{
-        playerOne.stats["loss"]++
+        playerOne.updateStats("L")
     }
     
+    playerOne.displayStats()
+    playerTwo.displayStats()
 }
-function changePlayer() {
+function changePlayer(reset="") {
     
-    
+    if(reset){
+        playerTurn.innerText = playerOne.name? playerOne.name : "Player One"
+        return
+    }
 
     if(playerTurn.id === "playerOne"){
         

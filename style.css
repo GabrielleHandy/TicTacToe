@@ -10,7 +10,7 @@ html body{
     display: flex;
     justify-content: space-around;
     height: 100%;
-    padding: 25px;
+    
     align-items: center;
 }
 /* Buttons */
@@ -156,6 +156,16 @@ nav{
     position: fixed;
     top: 0;
     right: 10px;
+
+}
+
+.btn.reset{
+    border: 2px solid beige;
+    background-color: black;
+    border-radius: 37px;
+    width: 126px;
+    height: 77px;
+    color: whitesmoke;
 }
 /* animations */
 
