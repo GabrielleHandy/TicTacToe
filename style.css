@@ -14,6 +14,21 @@ html body{
     align-items: center;
 }
 /* Buttons */
+
+#option-history button{
+    border: 2px solid beige;
+    background: #9198e5;
+    border-radius: 37px 37px 0 0;
+    width: 126px;
+    height: 77px;
+    color: whitesmoke;
+    
+}
+#option-history button:focus{
+    border-color: #dddddd;
+    box-shadow: 0 0 5px rgb(243, 243, 243);
+}
+
 .openRight{
     animation: moveToRight ease;
     animation-duration: .35s;
@@ -56,18 +71,48 @@ nav{
     bottom: 50%;
 }
 
-#option-history button{
-    border: 2px solid beige;
-    background-color: black;
-    border-radius: 37px 37px 0 0;
-    width: 126px;
-    height: 77px;
-    color: whitesmoke;
-    
+
+/* Option Color Choices */
+.backgroundColor{
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
 }
 
+/* Colors from https://digitalsynopsis.com/design/beautiful-color-ui-gradients-backgrounds/ */
+.color1{
+    background: radial-gradient(#cdffd8, #9198e5);
+}
+.color2{
+    background: radial-gradient(#f4e2d8,#ba5370);
+}
+.color3{
+    background: radial-gradient(#ffd89b , #19547b);
+}
+.color4{
+    background: radial-gradient(#243b55,#141e30);
 
-/* main content */
+}
+.color5{
+    
+background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
+
+}
+.color6{
+    background: radial-gradient(#d7603f,#a03527, #3b1e1c, #3c21b7);
+
+}
+
+.backgroundColor:hover{
+    box-shadow: #000000b8 0px 2px 5px 1px;
+    transform: translateY(-5px);
+}
+#colorChoices{
+    justify-content: space-around;
+    display: flex;
+}
+
+/* ----MAIN CONTENT------ */
 #title{
     font-size: 65px;
     
@@ -87,9 +132,10 @@ nav{
 }
 
 
-/* Tic Tac Board */
+/*-----TIC TAC BOARD-----*/
 .inactive{
     pointer-events: none;
+    
 }
 .winningSquares{
     box-shadow: #000000 0px 2px 20px 1px;
@@ -140,7 +186,7 @@ nav{
 
 
 
-/* results */
+/* -----RESULTS----- */
 #results{
     display: flex;
     flex-direction: column;
@@ -161,11 +207,15 @@ nav{
 
 .btn.reset{
     border: 2px solid beige;
-    background-color: black;
+    background-color: #9198e5;
     border-radius: 37px;
     width: 126px;
     height: 77px;
     color: whitesmoke;
+}
+.btn.reset:focus{
+    border-color: #dddddd;
+    box-shadow: 0 0 5px rgb(243, 243, 243);
 }
 /* animations */
 

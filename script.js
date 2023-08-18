@@ -308,6 +308,7 @@ class Board{
     }
 }
 //--------------------INITIALIZED ELEMENTS AND VARIABLE ON GAME START UP -----------
+const bodyEl = document.querySelector("body")
 const ticTacToe = document.querySelector("#ticTacBoard")
 const result = document.querySelector("#results")
 const resetBtn = document.querySelector(".reset")
@@ -327,6 +328,9 @@ const player2totalGames = document.querySelector("#totalGames2")
 const optionsBtn = document.querySelector("#optionBtn")
 const historyBtn = document.querySelector("#historyBtn")
 const navBar = document.querySelector("nav")
+//Color Choices
+const colorChoices = document.querySelectorAll(".backgroundColor")
+let activeColor = colorChoices[0]
 
 
 const playerOne = new Player(1)
@@ -372,6 +376,23 @@ historyBtn.addEventListener("click",()=>{
     moveNav(historyBtn)
     
 } )
+colorChoices.forEach(button =>{
+
+    button.addEventListener("click",()=>{
+
+        
+        bodyEl.style.background = button.getAttribute("name")
+        button.classList.add("inactive")
+        activeColor.classList.remove("inactive")
+        activeColor = button
+        
+    })
+
+
+
+
+
+})
 
 
 //-------------FUNCTIONS------------------------------
@@ -432,12 +453,12 @@ function moveNav(button) {
     if(optionsWindow.classList.contains("collapse-horizontal")){
         
         if(navBar.classList.contains("openRight")){
+            ticTacToe.classList.remove("inactive")
             navBar.classList.remove("openRight")
             navBar.classList.add("closeLeft")
-            console.log(button===historyBtn)
             button===historyBtn?historyBtn.classList.remove("mainBtn"):optionsBtn.classList.remove("mainBtn")
         }else{
-            
+            ticTacToe.classList.add("inactive")
             navBar.classList.remove("closeLeft")
             navBar.classList.add("openRight")
             button===historyBtn?historyBtn.classList.add("mainBtn"):optionsBtn.classList.add("mainBtn")
