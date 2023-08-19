@@ -4,7 +4,7 @@ class Player{
         this.name =name
         this.playerNum = playerNum
         this.icon
-        this.stats = {win:0, loss: 0, gamesPlayed:0}
+        this.stats = {win:0, loss: 0,tie:0, gamesPlayed:0}
         this.statElements
         this.setIcon()
 
@@ -23,29 +23,124 @@ class Player{
     }
     changeName(newName){
         this.name = newName
+
     }
-    updateStats(outcome){
-        if (outcome === "w") {
+    updateStats(outcome = "tie"){
+        if (outcome === "W") {
             this.stats.win++
-        } else {
+        } else if(outcome==="L") {
             this.stats.lose++
+        }else{
+            this.stats.tie++
         }
+
         this.stats.gamesPlayed++
 
-        this.updateStats
-
-        this.displaySta
+        this.displayStats
         
     }
     displayStats(){
         
         this.statElements[0].innerText = this.stats.win
         this.statElements[1].innerText = this.stats.loss
-        this.statElements[2].innerText = this.stats.gamesPlayed
+        this.statElements[2].innerText = this.stats.tie
+        this.statElements[3].innerText = this.stats.gamesPlayed
+
         
     }
 }
+class AiPlayer{
+    constructor(){
+        this.type= "AI"
+        this.playerNum = 2
+        this.icon ="O"
+    }
+    //I let chatGpt teach me how to get a better understanding of AI: https://chat.openai.com/share/f9efa7d7-a3dd-455c-ba1d-ee6628e0ec0f
+    makeMove(board){
+        console.log(board)
+        let emptySquares = []
+        for(let i = 1 ; i< 4; i++){
 
+            board[i].forEach(square =>{
+                console.log()
+                if(!square.player){
+                    emptySquares.push(emptySquares)
+                }
+            })
+        }
+        const bestMove = this.minimax(board, this.playerNum, emptySquares, -Infinity, Infinity)
+        bestMove.move.element.click()
+        console.log(bestMove)
+    }
+    minimax(board, currentPlayer, emptySquares, alpha, beta, square = null) {
+        //This step is the brain of the function. Each move is evaluated to see if it will win or not
+        if(square){
+
+
+            if (checkForWin(move, currentPlayer, board, true)) {
+                
+                    if (currentPlayer === playerOne.playerNum) {
+                        return { score: -100 };
+                    } else {
+                        return { score: 100 };
+                    }
+                } else if (emptySquares.length === 0) {
+                    return { score: 0 };
+                }
+
+        }
+
+            
+        console.log(emptySquares)
+
+        let bestMove
+        if (currentPlayer === this.playerNum) {
+            //sets best score to -inifinty so that any move is better than no move
+            //AI wants a score as high as possible
+            let bestScore = -Infinity;
+            for (let move of emptySquares) {
+                move.claimSquare(currentPlayer);
+                let score = minimax(board, playerOne.playerNum, emptySquares, alpha, beta, move).score;
+                move.reset();
+                
+                // Update alpha and bestScore
+                if (score > bestScore) {
+                    bestScore = score
+                    bestMove = move
+                }
+                alpha = Math.max(alpha, score);
+                
+                // Prune branches if beta is smaller or equal to alpha
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            return { score: bestScore };
+        } else {
+            let bestScore = Infinity;
+            for (let move of emptySquares) {
+                move.claimSquare(playerOne.playerNum);
+                let score = minimax(board, this.playerNum, emptySquares, alpha, beta).score;
+                move.reset();
+                
+                // Update beta and bestScore
+                if (score < bestScore) {
+                    bestScore = score
+                    bestMove = move
+                }
+                beta = Math.min(beta, score);
+                
+                // Prune branches if beta is smaller or equal to alpha
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            return { score: bestScore, move: bestMove};
+        }
+    }
+    
+
+}
 class Square {
     constructor(column, row){
         //column and row will tell where location is
@@ -239,13 +334,14 @@ class Board{
         //holds squares by row
         this.squares = {1:[], 2:[],3:[]}
         this.selectedSquare
+        this.remainingMoves = 0
         this.makeBoard()
         this.clearBoard("set")
-        
         
     }
     makeBoard(){
         // This creates the Squares for the board
+        this.remainingMoves= 9
         for(let row = 1; row < 4; row++){
             for(let column = 1; column < 4; column++){
                 let square = new Square(column, row)
@@ -264,11 +360,16 @@ class Board{
                     if(this.selectedSquare.player){
                         return
                     }
+                    this.remainingMoves--
                     let player = changePlayer()
 
                     this.selectedSquare.claimSquare(player.playerNum)
                     squareHtml.innerHTML = player.icon
+
                     checkForWin(this.selectedSquare, player, this.squares)
+                    if(player.type){
+                        player.makeMove(this.squares)
+                    }
                 })
         }
     }
@@ -282,6 +383,8 @@ class Board{
         })
     }
     clearBoard(){
+        this.remainingMoves=9
+        result.style.backgroundImage = null
         if(winningSquares){
             winningSquares.forEach(square=>{
                 square.element.classList.remove("winningSquares")
@@ -302,44 +405,66 @@ class Board{
     }
     makeInactive(){
         ticTacToe.classList.add("inactive")
-        winningSquares.forEach(square=>{
-            square.element.classList.add("winningSquares")
-        })
+        if(winningSquares){
+
+            winningSquares.forEach(square=>{
+                square.element.classList.add("winningSquares")
+            })
+        }
     }
 }
 //--------------------INITIALIZED ELEMENTS AND VARIABLE ON GAME START UP -----------
+const aiBtn = document.querySelector("#AI")
 const bodyEl = document.querySelector("body")
 const ticTacToe = document.querySelector("#ticTacBoard")
 const result = document.querySelector("#results")
 const resetBtn = document.querySelector(".reset")
 const winner = document.createElement("div")
+winner.setAttribute("id", "winner")
 const announcement = document.createElement("h2")
 let winningSquares = []
 
 const player1Wins = document.querySelector("#player1Wins")
 const player1loss = document.querySelector("#player1Loss")
 const player1totalGames = document.querySelector("#totalGames1")
+const player1ties = document.querySelector("#tie1")
+
 
 const player2Wins = document.querySelector("#player2Wins")
 const player2loss = document.querySelector("#player2Loss")
+const player2ties = document.querySelector("#tie2")
 const player2totalGames = document.querySelector("#totalGames2")
 
 // Variables for menu
 const optionsBtn = document.querySelector("#optionBtn")
 const historyBtn = document.querySelector("#historyBtn")
 const navBar = document.querySelector("nav")
+const nameChange = document.querySelector(".nameChange")
+const  nameChangeBtn = document.querySelector("#submitName")
+const nameChangeCheckBoxs = document.querySelectorAll(".flexSwitchCheckDefault")
+const nameChangeForm = document.querySelector("form")
 //Color Choices
-const colorChoices = document.querySelectorAll(".backgroundColor")
-let activeColor = colorChoices[0]
+const colorChoices= {
+    color1: {bodyBackground:"radial-gradient(#cdffd8, #9198e5)", bodyText:"", buttonColor:"", menuBackground:"" },
+    color2: {bodyBackground:"linear-gradient(200deg,rgb(244, 226, 216), rgb(186, 83, 112))", bodyText:"rgb(186, 83, 112)", buttonColor:"rgb(186, 83, 112)", menuBackground:"" },
+    color3: {bodyBackground:"radial-gradient(rgb(255, 216, 155), rgb(25, 84, 123))", bodyText:"white", buttonColor:"rgb(20, 30, 48)", menuBackground:"rgb(51 76 120)"},
+    color4: {bodyBackground:"radial-gradient(rgb(51 81 116), rgb(20, 30, 48))", bodyText:"white", buttonColor:"rgb(20, 30, 48)", menuBackground:"rgb(51 76 120)"},
+    color5: {bodyBackground:"linear-gradient(25deg,rgb(207, 203, 210), rgb(203, 152, 237), rgb(139, 99, 218), rgb(53 41 107))", bodyText:"white", buttonColor:"rgb(53 41 107)", menuBackground:"rgb(172 140 236)"},
+    color6: {bodyBackground:"linear-gradient(163deg,rgb(215, 96, 63), rgb(111 35 25))", bodyText:"", buttonColor:"rgb(59, 30, 28)", menuBackground:"rgb(172 70 57)"},
+}
+const colorDivs = document.querySelectorAll(".backgroundColor")
+let activeColor = colorDivs[0]
+const buttons = document.querySelectorAll(".btn")
+const  menuHeaders = document.querySelectorAll(".card-header")
 
 
 const playerOne = new Player(1)
-const playerTwo = new Player(2)
+let playerTwo = new Player(2)
 
 const playerTurn = document.querySelector("em")
 
-playerOne.statElements = [player1Wins,player1loss,player1totalGames]
-playerTwo.statElements = [player2Wins,player2loss,player2totalGames]
+playerOne.statElements = [player1Wins,player1loss,player1ties, player1totalGames]
+playerTwo.statElements = [player2Wins,player2loss,player2ties, player2totalGames]
 playerOne.displayStats()
 playerTwo.displayStats()
 
@@ -349,7 +474,11 @@ playerTwo.displayStats()
 
 
 
+
 const gameBoard= new Board()
+
+
+
 //------EVENT LISTENERS-------
 resetBtn.addEventListener("click", ()=> {gameBoard.clearBoard()})
 optionsBtn.addEventListener("click",()=>{
@@ -376,14 +505,13 @@ historyBtn.addEventListener("click",()=>{
     moveNav(historyBtn)
     
 } )
-colorChoices.forEach(button =>{
+colorDivs.forEach(button =>{
 
     button.addEventListener("click",()=>{
-
+        changeDesign(button.classList[1])
         
-        bodyEl.style.background = button.getAttribute("name")
-        button.classList.add("inactive")
-        activeColor.classList.remove("inactive")
+        button.classList.add("chosen")
+        activeColor.classList.remove("chosen")
         activeColor = button
         
     })
@@ -393,38 +521,90 @@ colorChoices.forEach(button =>{
 
 
 })
+nameChangeCheckBoxs.forEach(box=>{
+    box.addEventListener("change", ()=>{
+        if(box.checked){
+            if(box.getAttribute("value")==="1"){
+                nameChangeCheckBoxs[1].setAttribute("disabled", true)
+            }
+            else{
+                nameChangeCheckBoxs[0].setAttribute("disabled", true)
+            }
+        }else{
+            if(box.getAttribute("value")==="1"){
+                nameChangeCheckBoxs[1].removeAttribute("disabled")
+            }
+            else{
+                nameChangeCheckBoxs[0].removeAttribute("disabled")
+            }
+        }
+    })
+
+})
+nameChangeForm.addEventListener("submit", (e)=>{
+    e.preventDefault()
+
+    
+    let name = nameChange.value
+    
+    if(nameChangeCheckBoxs[0].checked){
+        playerOne.changeName(name)
+        playerTurn.id === "playerOne"?playerTurn.innerText=playerOne.name:playerTurn.id = playerTurn.id
+    }else if(nameChangeCheckBoxs[1].checked){
+        playerTwo.changeName(name)
+        playerTurn.id === "playerTwo"?playerTurn.innerText=playerTwo.name:playerTurn.id = playerTurn.id
+    }else(
+        alert("Please Chose a player")
+    )
+
+
+})
+aiBtn.addEventListener("click", ()=>{
+
+    
+    playerTwo = new AiPlayer()
+})
+
 
 
 //-------------FUNCTIONS------------------------------
-function checkForWin(square, playerobj, squares){
-    console.log(square.checkRow(squares),
-    square.checkColumn(squares),
-    square.checkDiagonal(squares))
+function checkForWin(square, playerobj, squares, Ai=null){
     if(square.checkRow(squares)||
     square.checkColumn(squares)||
     square.checkDiagonal(squares))
     {
-        console.log("here")
-        gameBoard.active = false
+        if(Ai){
+            return true
+        }
         announceWinner(playerobj)
+    }else if(gameBoard.remainingMoves <= 0){
+        announceWinner(null, tie="tie")
     }
     
 }
-function announceWinner(player) {
+function announceWinner(player,tie="") {
     resetBtn.innerText = "Start New Game"
     gameBoard.makeInactive()
-    announcement.innerText = `${player.name} wins!!`
-    winner.appendChild(announcement)
-    
-    result.appendChild(winner)
-    
-    player.updateStats("w")
-    if(player.playerNum === playerOne.playerNum){
-        playerTwo.updateStats("L")
+    console.log(tie)
+    if(tie){
+        announcement.innerText = `It's a draw!!`
+        playerOne.updateStats()
+        playerTwo.updateStats()
     }else{
-        playerOne.updateStats("L")
+
+        announcement.innerText = `${player.name} wins!!`
+        player.updateStats("W")
+        if(player.playerNum === playerOne.playerNum){
+            playerTwo.updateStats("L")
+        }else{
+            playerOne.updateStats("L")
+        }
     }
     
+    winner.appendChild(announcement)
+    result.style.backgroundImage = `url(https://media.giphy.com/media/n8DNCT49yl1keRq8p5/giphy.gif)`
+    result.appendChild(winner)
+
     playerOne.displayStats()
     playerTwo.displayStats()
 }
@@ -432,11 +612,16 @@ function changePlayer(reset="") {
     
     if(reset){
         playerTurn.innerText = playerOne.name? playerOne.name : "Player One"
+        playerTurn.setAttribute("id", "playerOne")
         return
     }
 
     if(playerTurn.id === "playerOne"){
-        
+        if(playerTwo.type){
+            playerTurn.innerText = "AI"
+            playerTurn.setAttribute("id", "playerTwo")
+            return playerOne
+        }
         playerTurn.innerText = playerTwo.name? playerTwo.name : "Player Two"
         playerTurn.setAttribute("id", "playerTwo")
         return playerOne
@@ -469,6 +654,18 @@ function moveNav(button) {
 
 }
 
-
+function changeDesign(colorNum){
+    let newStyles = colorChoices[colorNum]
+    bodyEl.style.background = newStyles.bodyBackground
+    bodyEl.style.color = newStyles.bodyText
+    buttons.forEach(button =>{
+        button.style.background = newStyles.buttonColor
+        
+    })
+    menuHeaders.forEach(header =>{
+        header.style.background = newStyles.menuBackground
+    })
+    
+}
 
 

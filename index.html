@@ -17,71 +17,108 @@
         <div id="optionMenu">
             <div class="collapse collapse-horizontal" id="Options">
                 <div class="card" style="width: 300px;">
-                    <h2>Options</h2>
-                    <div class="card-body">
-                        <div id = "colorChoices">
-                            <div class="backgroundColor color1 inactive" name="radial-gradient(#cdffd8, #9198e5)"></div>
-                            <div class="backgroundColor color2" name="radial-gradient(#f4e2d8,#ba5370)"></div>
-                            <div class="backgroundColor color3" name="radial-gradient(#ffd89b , #19547b)"></div>
-                            <div class="backgroundColor color4" name="radial-gradient(#243b55,#141e30)"></div>
-                            <div class="backgroundColor color5" name="radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7)"></div>
-                            <div class="backgroundColor color6" name="linear-gradient(#d7603f,#a03527, #3b1e1c, #3c21b7)"></div>
-                        </div>
+                    <div class="card-header">
+                        <h2>Options</h2>
                     </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>Change Background</h3>
+                            <div id = "colorChoices">
+                                <div class="backgroundColor color1 chosen"></div>
+                                <div class="backgroundColor color2" ></div>
+                                <div class="backgroundColor color3"></div>
+                                <div class="backgroundColor color4"></div>
+                                <div class="backgroundColor color5"></div>
+                                <div class="backgroundColor color6"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <h3 id="changeLabel">Change Name</h3>
+                        <div>
+                            <form>
 
-                        
+                                <label for="nameChange">Enter Name</label>
+                                <input id="nameChange" type="text" aria-label="First name" class="form-control nameChange">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input flexSwitchCheckDefault" type="checkbox" role="switch" value="1">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault" >Player One</label>
+                                  </div>
+                                  <div class="form-check form-switch">
+                                    <input class="form-check-input flexSwitchCheckDefault" type="checkbox" role="switch" value="2">
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Player Two</label>
+                                <button id="submitName"  type="submit" class="btn submit">Change</button>
+
+                            </form>
+
+                        </div>
+                        <br>
+                    </div>
+                        <div>
+                          <button id="Human" type="button" class="btn btn-secondary" data-dismiss="modal">Human</button>
+                          <button id="AI" type="button" class="btn btn-primary" id="AI">AI</button>
+                        </div>
+                    
+                      </div>
+                    </div>
+                    <br>
                     <div class="card-footer">
                         <a href="https://www.flaticon.com/free-icons/cross" title="cross icons">All icons created by Freepik - Flaticon</a>
-                </div>
-                </div>
+                    </div>
         </div>
-        </div>
+        
+
         <div id="historyMenu">
             <div class="collapse collapse-horizontal" id="History">
-                <div class="card card-body" style="width: 300px;">
-                    <h2>Game History</h2>
-                    <div id="player1"><h3><span id="player1Name"></span>'s Stats</h3>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Wins</th>
-                                    <th scope="col">Loss</th>
-                                    <th scope="col">Total Games</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td id="player1Wins">0</td>
-                                    <td id="player1Loss">0</td>
-                                    <td id="totalGames1">0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                    <div id="player2"><h3><span id="player2Name"></span>'s Stats</h3>
-                        <table class="table">
-                        <thead>
-                            <tr>
-                                    <th scope="col">Wins</th>
-                                    <th scope="col">Loss</th>
-                                    <th scope="col">Total Games</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td id="player2Wins">0</td>
-                                    <td id="player2Loss">0</td>
-                                    <td id="totalGames2">0</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="card" style="width: 300px;">
+                    <div class="card-header"><h2>Game History</h2></div>
+                    <div class="card-body">
+                        <div id="player1"><h3><span id="player1Name"></span>'s Stats</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Wins</th>
+                                        <th scope="col">Loss</th>
+                                        <th scope="col">Draw</th>
+                                        <th scope="col">Total Games</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="player1Wins">0</td>
+                                        <td id="player1Loss">0</td>
+                                        <td id="tie1">0</td>
+                                        <td id="totalGames1">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                        <div id="player2"><h3><span id="player2Name"></span>'s Stats</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Wins</th>
+                                        <th scope="col">Loss</th>
+                                        <th scope="col">Draw</th>
+                                        <th scope="col">Total Games</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="player2Wins">0</td>
+                                        <td id="player2Loss">0</td>
+                                        <td id="tie2">0</td>
+                                        <td id="totalGames2">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     
                 </div>
         </div>
         </div>
-        
+    </div>
     </div>
     <div id="mainContent">
         <h1 id="title">Tic Tac Toe</h1>
