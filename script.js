@@ -57,41 +57,43 @@ class AiPlayer{
     }
     //I let chatGpt teach me how to get a better understanding of AI: https://chat.openai.com/share/f9efa7d7-a3dd-455c-ba1d-ee6628e0ec0f
     makeMove(board){
-        console.log(board)
         let emptySquares = []
         for(let i = 1 ; i< 4; i++){
 
             board[i].forEach(square =>{
-                console.log()
+                
                 if(!square.player){
-                    emptySquares.push(emptySquares)
+                    emptySquares.push(square)
                 }
             })
+
         }
         const bestMove = this.minimax(board, this.playerNum, emptySquares, -Infinity, Infinity)
         bestMove.move.element.click()
-        console.log(bestMove)
+        
     }
+
+
     minimax(board, currentPlayer, emptySquares, alpha, beta, square = null) {
         //This step is the brain of the function. Each move is evaluated to see if it will win or not
         if(square){
 
 
-            if (checkForWin(move, currentPlayer, board, true)) {
+            if (checkForWin(square, currentPlayer, board, true)) {
                 
                     if (currentPlayer === playerOne.playerNum) {
                         return { score: -100 };
                     } else {
                         return { score: 100 };
                     }
-                } else if (emptySquares.length === 0) {
-                    return { score: 0 };
-                }
-
-        }
+                } 
+                
+            }
+        else if(emptySquares.length === 0) {
+            return { score: 0 };
+            }
 
             
-        console.log(emptySquares)
 
         let bestMove
         if (currentPlayer === this.playerNum) {
@@ -99,9 +101,15 @@ class AiPlayer{
             //AI wants a score as high as possible
             let bestScore = -Infinity;
             for (let move of emptySquares) {
-                move.claimSquare(currentPlayer);
-                let score = minimax(board, playerOne.playerNum, emptySquares, alpha, beta, move).score;
-                move.reset();
+                move.claimSquare(currentPlayer)
+                let tempHolder = emptySquares.splice(emptySquares.indexOf(move), 1)
+                
+                let score = this.minimax(board, playerOne.playerNum, emptySquares, alpha, beta, move).score;
+                if(tempHolder instanceof Square){
+
+                    emptySquares.push(tempHolder)
+                }
+                move.reset()
                 
                 // Update alpha and bestScore
                 if (score > bestScore) {
@@ -115,12 +123,20 @@ class AiPlayer{
                     break;
                 }
             }
-            return { score: bestScore };
+            return {score: bestScore , move:bestMove};
         } else {
             let bestScore = Infinity;
             for (let move of emptySquares) {
-                move.claimSquare(playerOne.playerNum);
-                let score = minimax(board, this.playerNum, emptySquares, alpha, beta).score;
+                
+                move.claimSquare(playerOne.playerNum)
+                
+                let tempHolder = emptySquares.splice(emptySquares.indexOf(move), 1)
+                
+                let score = this.minimax(board, this.playerNum, emptySquares, alpha, beta).score;
+                if(tempHolder instanceof Square){
+                    
+                    emptySquares.push(tempHolder)
+                }
                 move.reset();
                 
                 // Update beta and bestScore
@@ -367,8 +383,9 @@ class Board{
                     squareHtml.innerHTML = player.icon
 
                     checkForWin(this.selectedSquare, player, this.squares)
-                    if(player.type){
-                        player.makeMove(this.squares)
+
+                    if(player.playerNum === 1){
+                        playerTwo.makeMove(this.squares)
                     }
                 })
         }
