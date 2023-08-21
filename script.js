@@ -6,6 +6,7 @@ class Player{
         this.icon
         this.stats = {win:0, loss: 0,tie:0, gamesPlayed:0}
         this.statElements
+        this.theme = 1
         this.setIcon()
 
         
@@ -23,6 +24,7 @@ class Player{
     }
     changeName(newName){
         this.name = newName
+        this.save()
 
     }
     updateStats(outcome = "tie"){
@@ -35,7 +37,7 @@ class Player{
         }
 
         this.stats.gamesPlayed++
-
+        this.save()
         this.displayStats
         
     }
@@ -47,6 +49,18 @@ class Player{
         this.statElements[4].innerText = this.stats.gamesPlayed
 
         
+    }
+    save(){
+        localStorage["player"] = {name: this.name,
+                                playerNum: this.playerNum,
+                                stats:this.stats,
+                                theme:this.theme}
+    }
+    load(){
+        this.name = localStorage['player'].name
+        this.stats = localStorage['player'].stats
+
+        changeDesign(localStorage['player'].theme)
     }
 }
 class AiPlayer extends Player{
@@ -412,8 +426,9 @@ class Board{
                         
                         if(player.playerNum === 1){
                             if(playerTwo.type){
+
                                 setTimeout(()=>{playerTwo.makeMove(this.squares)}, 1000)
-    
+                                
                             }
                             
                         }
@@ -489,11 +504,21 @@ const player2Name = document.querySelector("#player2Name")
 // Variables for menu
 const optionsBtn = document.querySelector("#optionBtn")
 const historyBtn = document.querySelector("#historyBtn")
+const menus = document.querySelectorAll(".collapse")
+if(window.screen.width < 800){
+    menus.forEach(menu => {
+        menu.classList.remove("collapse-horizontal")
+    })
+}
 const navBar = document.querySelector("nav")
 const nameChange = document.querySelector(".nameChange")
 const  nameChangeBtn = document.querySelector("#submitName")
 const nameChangeCheckBoxs = document.querySelectorAll(".flexSwitchCheckDefault")
 const nameChangeForm = document.querySelector("form")
+
+
+
+
 //Color Choices
 const colorChoices= {
     color1: {bodyBackground:"radial-gradient(#cdffd8, #9198e5)", bodyText:"", buttonColor:"", menuBackground:"" },
@@ -510,17 +535,20 @@ const  menuHeaders = document.querySelectorAll(".card-header")
 
 
 const playerOne = new Player(1)
+// if(window.localStorage["player"]){
+//     playerOne.load()
+// }
 let playerTwo = new Player(2)
 
 const playerTurn = document.querySelector("em")
 
 playerOne.statElements = [player1Name, player1Wins,player1loss,player1ties, player1totalGames]
 playerTwo.statElements = [player2Name, player2Wins,player2loss,player2ties, player2totalGames]
-playerOne.displayStats()
-playerTwo.displayStats()
 
 !playerOne.name? playerOne.name = "Player One": playerOne.name
 !playerTwo.name? playerTwo.name = "Player Two": playerTwo.name
+playerOne.displayStats()
+playerTwo.displayStats()
 
 
 
@@ -532,6 +560,20 @@ const gameBoard= new Board()
 
 //------EVENT LISTENERS-------
 resetBtn.addEventListener("click", ()=> {gameBoard.clearBoard()})
+window.addEventListener("resize", ()=>{
+    if(window.screen.width < 800){
+        menus.forEach(menu => {
+            menu.classList.remove("collapse-horizontal")
+        })
+    }else{
+        if(!menus[0].classList.contains("collapse-horizontal")){
+            menus.forEach(menu => {
+                menu.classList.add("collapse-horizontal")
+            })
+        }
+    }
+
+})
 optionsBtn.addEventListener("click",()=>{
 
     
@@ -556,6 +598,12 @@ historyBtn.addEventListener("click",()=>{
     moveNav(historyBtn)
     
 } )
+
+
+
+
+
+
 colorDivs.forEach(button =>{
 
     button.addEventListener("click",()=>{
@@ -696,26 +744,27 @@ function changePlayer(reset="") {
 
 function moveNav(button) {
     let optionsWindow = document.querySelector("#Options")
-    if(optionsWindow.classList.contains("collapse-horizontal")){
+    
         
-        if(navBar.classList.contains("openRight")){
+        if(navBar.classList.contains("moveOpen")){
             ticTacToe.classList.remove("inactive")
-            navBar.classList.remove("openRight")
-            navBar.classList.add("closeLeft")
+            navBar.classList.remove("moveOpen")
+            navBar.classList.add("moveClose")
             button===historyBtn?historyBtn.classList.remove("mainBtn"):optionsBtn.classList.remove("mainBtn")
         }else{
             ticTacToe.classList.add("inactive")
-            navBar.classList.remove("closeLeft")
-            navBar.classList.add("openRight")
+            navBar.classList.remove("moveClose")
+            navBar.classList.add("moveOpen")
             button===historyBtn?historyBtn.classList.add("mainBtn"):optionsBtn.classList.add("mainBtn")
 
 
         }
-    }
+    
 
 }
 
 function changeDesign(colorNum){
+    console.log(colorNum)
     let newStyles = colorChoices[colorNum]
     bodyEl.style.background = newStyles.bodyBackground
     bodyEl.style.color = newStyles.bodyText
@@ -726,7 +775,8 @@ function changeDesign(colorNum){
     menuHeaders.forEach(header =>{
         header.style.background = newStyles.menuBackground
     })
-    
+    playerOne.theme = colorNum
+    playerOne.save()
 }
 
 

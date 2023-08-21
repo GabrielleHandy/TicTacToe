@@ -34,14 +34,14 @@ html body{
     box-shadow: 0 0 5px rgb(243, 243, 243);
 }
 
-.openRight{
-    animation: moveToRight ease;
+.moveOpen{
+    animation: moveOpen ease;
     animation-duration: .35s;
     animation-fill-mode: forwards;
 }
 
-.closeLeft{
-    animation: moveToLeft ease;
+.moveClose{
+    animation: moveClose ease;
     animation-duration: .35s;
     animation-fill-mode: forwards;
 
@@ -63,7 +63,7 @@ html body{
     position: fixed;
     left: 0;
 }
-    
+
 #Options, #Options .card, #History, #History .card{
     height: 100%;
     
@@ -89,7 +89,7 @@ button#submitName.submit{
     height: 2.5rem;
     margin: 0 36px;
     background: #7d85df;
-
+    
 }
 
 .nameChange{
@@ -120,16 +120,16 @@ button#submitName.submit{
 }
 .color4{
     background: radial-gradient(#243b55,#141e30);
-
+    
 }
 .color5{
     
-background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
-
+    background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
+    
 }
 .color6{
     background: radial-gradient(#d7603f,#a03527, #3b1e1c, #3c21b7);
-
+    
 }
 
 .backgroundColor:hover{
@@ -157,7 +157,7 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
     padding: 0 5%;
     width: 60%;
     align-items: center;
-
+    
 }
 
 
@@ -175,7 +175,7 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     width: 100%;
-
+    
 }
 .square{
     height: 120px;
@@ -210,7 +210,7 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
 .squareCol3{
     grid-column: 3/3;
 }
-    
+
 
 
 
@@ -228,13 +228,13 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
 #results div{
     height:50px;
     font-size: 2em;
-
+    
 }
 #version{
     position: fixed;
     top: 0;
     right: 10px;
-
+    
 }
 
 .btn.reset{
@@ -251,12 +251,12 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
 }
 /* animations */
 
-@keyframes moveToRight {
+@keyframes moveOpen {
     to{
         transform:translateY(-300px)
     }
 }
-@keyframes moveToLeft {
+@keyframes moveClose {
     from{
         transform:translateY(-300px)
     }
@@ -277,7 +277,7 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
     
     #container{
         display: grid;
-        grid-template-rows: 6% 1fr 25%;
+        grid-template-rows: 10% 1fr 25%  ;
         grid-template-columns: 1fr;
         
     }
@@ -287,7 +287,7 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
         display: block;
         height: 100%;
     }
-
+    
     #mainContent{
         grid-row: 2/2;
         display: flex;
@@ -296,9 +296,9 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
         padding: 0 5%;
         width: 100%;
         align-items: center;
-    
+        
     }
-
+    
     #title{
         font-size: 3em;
         
@@ -307,7 +307,7 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
         font-size: 2em;
         margin-bottom: 35px;
     }
-
+    
     #results{
         
         grid-row: 3/3;
@@ -327,15 +327,16 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
         height: auto;
         color: whitesmoke;
         font-size: 1.5em;
+        margin-top: -76px;
     }
     #winner h2{
         font-size: 1em;
-
-    
+        
+        
         
     }
     nav{
-
+        
         position: static;
         display: flex;
         left: 25%;
@@ -343,8 +344,9 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
         bottom: 0%;
         top: 0%;
         height:fit-content;
-
-
+        margin-top: -15px;
+        
+        
     }
     #option-historyBtns button{
         border: 2px solid beige;
@@ -354,20 +356,55 @@ background: radial-gradient(#cfcbd2,#cb98ed, #8b63da, #3c21b7);
         height: auto;
         color: whitesmoke;
         font-size: 2em;
-            
+        
     }
     #option-history button:focus{
         border-color: #dddddd;
         box-shadow: 0 0 5px rgb(243, 243, 243);
     }
+    #optionMenu, #historyMenu{
+        
+        height: 100%;
+        position: fixed;
+        top: -3px;
+        left: auto;
+    }
 
     .square{
-        height: 100px;
-        font-size: 4em;
+        height: 80px;
+        font-size: 3.5em;
         text-align: center;
     }
-    @keyframes moveDown{
 
+    .moveOpen{
+        animation: moveOpen ease;
+        animation-duration: .3s;
+        animation-fill-mode: forwards;
     }
+    
+    .moveClose{
+        animation: moveClose ease;
+        animation-duration: .3s;
+        animation-fill-mode: forwards;
+    
+    }
+    @keyframes moveOpen {
+        to{
+            translate: -150px 450px;
+            rotate: 90deg;
+        }
+    }
+    @keyframes moveClose {
+        from{
+            transform:translateY(500px)
+        }
+        
+        to{
+            transform:translateY(0px)
+        }
+    }
+    
+    
+    
 }
 
