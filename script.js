@@ -534,9 +534,9 @@ const  menuHeaders = document.querySelectorAll(".card-header")
 
 
 const playerOne = new Player(1)
-// if(window.localStorage["player"]){
-//     playerOne.load()
-// }
+if(window.localStorage["playerName"]){
+    playerOne.load()
+}
 let playerTwo = new Player(2)
 
 const playerTurn = document.querySelector("em")
