@@ -49,7 +49,7 @@ class Player{
         
     }
 }
-class AiPlayer{
+class AiPlayer extends Player{
     constructor(){
         this.type= "AI"
         this.playerNum = 2
@@ -59,104 +59,136 @@ class AiPlayer{
     makeMove(board){
         let emptySquares = []
         for(let i = 1 ; i< 4; i++){
-
+            
             board[i].forEach(square =>{
                 
-                if(!square.player){
+                if(square.player === 0){
                     emptySquares.push(square)
                 }
             })
 
         }
-        const bestMove = this.minimax(board, this.playerNum, emptySquares, -Infinity, Infinity)
-        bestMove.move.element.click()
         
+        const moveChoice = this.minimax(board, playerTwo, emptySquares, -Infinity, Infinity).move
+        
+        moveChoice.element.click()
+        checkForWin(moveChoice, playerTwo, board)
     }
 
-
+    evaluateBoard(board) {
+        const winningCombinations = [
+            [[1, 0], [1, 1], [1, 2]], // Rows
+            [[2, 0], [2, 1], [2, 2]],
+            [[3, 0], [3, 1], [3, 2]],
+            [[1, 0], [2, 0], [3, 0]], // Columns
+            [[1, 1], [2, 1], [3, 1]],
+            [[1, 2], [2, 2], [3, 2]],
+            [[1, 0], [2, 1], [3, 2]], // Diagonals
+            [[1, 2], [2, 1], [3, 0]]
+        ];
+    
+        let score = 0;
+    
+        for (const combination of winningCombinations) {
+            const aiCount = combination.filter(coords => board[coords[0]][coords[1]].player === this.playerNum).length
+            const opponentCount = combination.filter(coords => board[coords[0]][coords[1]].player !== 0 && board[coords[0]][coords[1]].player !== this.playerNum).length
+            if (aiCount === 3) {
+                score += 100; // AI wins
+            } else if (opponentCount === 3) {
+                score -= 100; // Opponent wins
+            } else {
+                score += aiCount; // Encourage AI to complete its own lines
+                score -= opponentCount; // Discourage opponent from completing their lines
+            }
+        }
+        return score;
+    }
+    
+    
     minimax(board, currentPlayer, emptySquares, alpha, beta, square = null) {
         //This step is the brain of the function. Each move is evaluated to see if it will win or not
+    
         if(square){
-
-
             if (checkForWin(square, currentPlayer, board, true)) {
-                
-                    if (currentPlayer === playerOne.playerNum) {
-                        return { score: -100 };
-                    } else {
-                        return { score: 100 };
-                    }
+                let score = this.evaluateBoard(board)
+                return {score: score}
                 } 
                 
-            }
-        else if(emptySquares.length === 0) {
-            return { score: 0 };
+            }else if(emptySquares.length === 0) {
+            return { score: 0 }
             }
 
             
-
         let bestMove
-        if (currentPlayer === this.playerNum) {
+        if (currentPlayer.playerNum === this.playerNum) {
             //sets best score to -inifinty so that any move is better than no move
             //AI wants a score as high as possible
             let bestScore = -Infinity;
             for (let move of emptySquares) {
-                move.claimSquare(currentPlayer)
-                let tempHolder = emptySquares.splice(emptySquares.indexOf(move), 1)
-                
-                let score = this.minimax(board, playerOne.playerNum, emptySquares, alpha, beta, move).score;
-                if(tempHolder instanceof Square){
+                move.claimSquare(currentPlayer.playerNum)
 
-                    emptySquares.push(tempHolder)
-                }
+                let tempSquares = emptySquares.slice()
+                tempSquares.splice(tempSquares.indexOf(move), 1)
+                
+                let score = this.minimax(board, playerOne, tempSquares, alpha, beta, move).score
+                
+                
+                
+                
                 move.reset()
+                
+                alpha = Math.max(alpha, bestScore);
                 
                 // Update alpha and bestScore
                 if (score > bestScore) {
                     bestScore = score
                     bestMove = move
                 }
-                alpha = Math.max(alpha, score);
                 
-                // Prune branches if beta is smaller or equal to alpha
-                if (beta <= alpha) {
-                    break;
+                // Prune branches if beta is smaller or equal to        `
+                else if (beta <= alpha) {
+                    break
                 }
+                
             }
-            return {score: bestScore , move:bestMove};
+            
+            return {score: bestScore , move: bestMove}
         } else {
             let bestScore = Infinity;
             for (let move of emptySquares) {
                 
                 move.claimSquare(playerOne.playerNum)
                 
-                let tempHolder = emptySquares.splice(emptySquares.indexOf(move), 1)
                 
-                let score = this.minimax(board, this.playerNum, emptySquares, alpha, beta).score;
-                if(tempHolder instanceof Square){
-                    
-                    emptySquares.push(tempHolder)
-                }
-                move.reset();
+                let tempSquares = emptySquares.slice()
+                tempSquares.splice(tempSquares.indexOf(move), 1)
+                
+                let score = this.minimax(board, playerTwo, tempSquares, alpha, beta, move).score;
+                
+                move.reset()
                 
                 // Update beta and bestScore
+                beta = Math.min(beta, bestScore)
                 if (score < bestScore) {
                     bestScore = score
                     bestMove = move
+                    
                 }
-                beta = Math.min(beta, score);
+
+                
                 
                 // Prune branches if beta is smaller or equal to alpha
-                if (beta <= alpha) {
-                    break;
+                else if (beta <= alpha) {
+                    break
                 }
             }
             return { score: bestScore, move: bestMove};
         }
     }
-    
 
-}
+    
+    }
+    
 class Square {
     constructor(column, row){
         //column and row will tell where location is
@@ -385,7 +417,8 @@ class Board{
                     checkForWin(this.selectedSquare, player, this.squares)
 
                     if(player.playerNum === 1){
-                        playerTwo.makeMove(this.squares)
+                        setTimeout(()=>{playerTwo.makeMove(this.squares)}, 1000)
+                        
                     }
                 })
         }
@@ -591,18 +624,24 @@ function checkForWin(square, playerobj, squares, Ai=null){
     square.checkDiagonal(squares))
     {
         if(Ai){
+            winningSquares = []
             return true
         }
         announceWinner(playerobj)
     }else if(gameBoard.remainingMoves <= 0){
         announceWinner(null, tie="tie")
     }
+    else{
+        if(Ai){
+            return false
+        }
+    }
     
 }
 function announceWinner(player,tie="") {
     resetBtn.innerText = "Start New Game"
     gameBoard.makeInactive()
-    console.log(tie)
+    
     if(tie){
         announcement.innerText = `It's a draw!!`
         playerOne.updateStats()
