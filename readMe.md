@@ -1,10 +1,10 @@
-# Tic Tac Toe
+# [Tic Tac Toe](https://gabriellehandy.github.io/TicTacToe/)
 
 Play tic tac toe with this fleshed-out web app!
 
 ## Installation
 
-No installation is needed! Just go to [insert link](www.websitelink.com)
+No installation is needed! 
 
 
 
