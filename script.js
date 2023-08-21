@@ -40,17 +40,19 @@ class Player{
         
     }
     displayStats(){
-        
-        this.statElements[0].innerText = this.stats.win
-        this.statElements[1].innerText = this.stats.loss
-        this.statElements[2].innerText = this.stats.tie
-        this.statElements[3].innerText = this.stats.gamesPlayed
+        this.statElements[0].innerText = this.name
+        this.statElements[1].innerText = this.stats.win
+        this.statElements[2].innerText = this.stats.loss
+        this.statElements[3].innerText = this.stats.tie
+        this.statElements[4].innerText = this.stats.gamesPlayed
 
         
     }
 }
 class AiPlayer extends Player{
-    constructor(){
+    constructor(statElements, stats){
+        super(stats,statElements )
+        this.name = "AI"
         this.type= "AI"
         this.playerNum = 2
         this.icon ="O"
@@ -69,7 +71,7 @@ class AiPlayer extends Player{
 
         }
         
-        const moveChoice = this.minimax(board, playerTwo, emptySquares, -Infinity, Infinity).move
+        const moveChoice = this.minimax(board, playerTwo, emptySquares).move
         
         moveChoice.element.click()
         checkForWin(moveChoice, playerTwo, board)
@@ -91,6 +93,7 @@ class AiPlayer extends Player{
     
         for (const combination of winningCombinations) {
             const aiCount = combination.filter(coords => board[coords[0]][coords[1]].player === this.playerNum).length
+            
             const opponentCount = combination.filter(coords => board[coords[0]][coords[1]].player !== 0 && board[coords[0]][coords[1]].player !== this.playerNum).length
             if (aiCount === 3) {
                 score += 100; // AI wins
@@ -105,7 +108,7 @@ class AiPlayer extends Player{
     }
     
     
-    minimax(board, currentPlayer, emptySquares, alpha, beta, square = null) {
+    minimax(board, currentPlayer, emptySquares, square = null) {
         //This step is the brain of the function. Each move is evaluated to see if it will win or not
     
         if(square){
@@ -123,21 +126,17 @@ class AiPlayer extends Player{
         if (currentPlayer.playerNum === this.playerNum) {
             //sets best score to -inifinty so that any move is better than no move
             //AI wants a score as high as possible
-            let bestScore = -Infinity;
+            let bestScore = -Infinity
             for (let move of emptySquares) {
                 move.claimSquare(currentPlayer.playerNum)
 
                 let tempSquares = emptySquares.slice()
                 tempSquares.splice(tempSquares.indexOf(move), 1)
                 
-                let score = this.minimax(board, playerOne, tempSquares, alpha, beta, move).score
-                
-                
-                
-                
+                let score = this.minimax(board, playerOne, tempSquares, move).score
+                console.log(`AI ${move} ${score} ${bestScore}`)
+
                 move.reset()
-                
-                alpha = Math.max(alpha, bestScore);
                 
                 // Update alpha and bestScore
                 if (score > bestScore) {
@@ -146,15 +145,11 @@ class AiPlayer extends Player{
                 }
                 
                 // Prune branches if beta is smaller or equal to        `
-                else if (beta <= alpha) {
-                    break
-                }
-                
             }
             
             return {score: bestScore , move: bestMove}
         } else {
-            let bestScore = Infinity;
+            let bestScore = Infinity
             for (let move of emptySquares) {
                 
                 move.claimSquare(playerOne.playerNum)
@@ -163,29 +158,25 @@ class AiPlayer extends Player{
                 let tempSquares = emptySquares.slice()
                 tempSquares.splice(tempSquares.indexOf(move), 1)
                 
-                let score = this.minimax(board, playerTwo, tempSquares, alpha, beta, move).score;
-                
+                let score = this.minimax(board, playerTwo, tempSquares, move).score;
+                console.log(`Opponent ${move} ${score}`)
                 move.reset()
                 
-                // Update beta and bestScore
-                beta = Math.min(beta, bestScore)
                 if (score < bestScore) {
                     bestScore = score
                     bestMove = move
                     
                 }
-
-                
-                
-                // Prune branches if beta is smaller or equal to alpha
-                else if (beta <= alpha) {
-                    break
-                }
             }
             return { score: bestScore, move: bestMove};
         }
     }
-
+    displayStats(){
+        super.displayStats()
+    }
+    updateStats(outcome="tie"){
+        super.updateStats(outcome)
+    }
     
     }
     
@@ -383,6 +374,7 @@ class Board{
         this.squares = {1:[], 2:[],3:[]}
         this.selectedSquare
         this.remainingMoves = 0
+        this.active = true
         this.makeBoard()
         this.clearBoard("set")
         
@@ -415,10 +407,16 @@ class Board{
                     squareHtml.innerHTML = player.icon
 
                     checkForWin(this.selectedSquare, player, this.squares)
+                    if(this.active){
 
-                    if(player.playerNum === 1){
-                        setTimeout(()=>{playerTwo.makeMove(this.squares)}, 1000)
                         
+                        if(player.playerNum === 1){
+                            if(playerTwo.type){
+                                setTimeout(()=>{playerTwo.makeMove(this.squares)}, 1000)
+    
+                            }
+                            
+                        }
                     }
                 })
         }
@@ -433,6 +431,7 @@ class Board{
         })
     }
     clearBoard(){
+        this.active = true
         this.remainingMoves=9
         result.style.backgroundImage = null
         if(winningSquares){
@@ -454,6 +453,7 @@ class Board{
         winner.remove()
     }
     makeInactive(){
+        this.active = false
         ticTacToe.classList.add("inactive")
         if(winningSquares){
 
@@ -478,12 +478,13 @@ const player1Wins = document.querySelector("#player1Wins")
 const player1loss = document.querySelector("#player1Loss")
 const player1totalGames = document.querySelector("#totalGames1")
 const player1ties = document.querySelector("#tie1")
-
+const player1Name = document.querySelector("#player1Name")
 
 const player2Wins = document.querySelector("#player2Wins")
 const player2loss = document.querySelector("#player2Loss")
 const player2ties = document.querySelector("#tie2")
 const player2totalGames = document.querySelector("#totalGames2")
+const player2Name = document.querySelector("#player2Name")
 
 // Variables for menu
 const optionsBtn = document.querySelector("#optionBtn")
@@ -513,8 +514,8 @@ let playerTwo = new Player(2)
 
 const playerTurn = document.querySelector("em")
 
-playerOne.statElements = [player1Wins,player1loss,player1ties, player1totalGames]
-playerTwo.statElements = [player2Wins,player2loss,player2ties, player2totalGames]
+playerOne.statElements = [player1Name, player1Wins,player1loss,player1ties, player1totalGames]
+playerTwo.statElements = [player2Name, player2Wins,player2loss,player2ties, player2totalGames]
 playerOne.displayStats()
 playerTwo.displayStats()
 
@@ -599,9 +600,11 @@ nameChangeForm.addEventListener("submit", (e)=>{
     
     if(nameChangeCheckBoxs[0].checked){
         playerOne.changeName(name)
+        playerOne.statElements[0] = playerOne.name
         playerTurn.id === "playerOne"?playerTurn.innerText=playerOne.name:playerTurn.id = playerTurn.id
     }else if(nameChangeCheckBoxs[1].checked){
         playerTwo.changeName(name)
+        playerTwo.statElements[0] = playerTwo.name
         playerTurn.id === "playerTwo"?playerTurn.innerText=playerTwo.name:playerTurn.id = playerTurn.id
     }else(
         alert("Please Chose a player")
@@ -613,6 +616,8 @@ aiBtn.addEventListener("click", ()=>{
 
     
     playerTwo = new AiPlayer()
+    playerTwo.statElements = [player2Name, player2Wins,player2loss,player2ties, player2totalGames]
+    playerTwo.displayStats()
 })
 
 
