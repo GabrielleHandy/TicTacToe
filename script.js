@@ -51,16 +51,15 @@ class Player{
         
     }
     save(){
-        localStorage["player"] = {name: this.name,
-                                playerNum: this.playerNum,
-                                stats:this.stats,
-                                theme:this.theme}
-    }
+        localStorage["playerName"] = this.name
+        localStorage["playerStats"] = this.stats
+        localStorage["theme"] = this.theme
+    }  
     load(){
-        this.name = localStorage['player'].name
-        this.stats = localStorage['player'].stats
+        this.name = localStorage['playerName']
+        this.stats = localStorage['playerStats']
 
-        changeDesign(localStorage['player'].theme)
+        changeDesign(localStorage['theme'])
     }
 }
 class AiPlayer extends Player{
@@ -148,7 +147,7 @@ class AiPlayer extends Player{
                 tempSquares.splice(tempSquares.indexOf(move), 1)
                 
                 let score = this.minimax(board, playerOne, tempSquares, move).score
-                console.log(`AI ${move} ${score} ${bestScore}`)
+                
 
                 move.reset()
                 
@@ -764,7 +763,7 @@ function moveNav(button) {
 }
 
 function changeDesign(colorNum){
-    console.log(colorNum)
+    
     let newStyles = colorChoices[colorNum]
     bodyEl.style.background = newStyles.bodyBackground
     bodyEl.style.color = newStyles.bodyText
