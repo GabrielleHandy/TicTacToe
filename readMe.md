@@ -12,8 +12,8 @@ No installation is needed!
 ### TECH Used: HTML, CSS, JS, Bootstrap
 - Started by using HTML and CSS to create the design and layout.
 - I added JS to make it responsive and dynamic.
-- I created an AI to play with with buttons to toggle between Human and AI options
-- I added extras like, Name change, Music, and theme changing for a more personalized experience
+- I created an AI to play with, with buttons to toggle between Human and AI options
+- I added extras like Name change, Music, and theme changing for a more personalized experience
 
 ## Wireframe
 I was inspired by this website: [Pomodoro Kitty](https://pomodorokitty.com/)
