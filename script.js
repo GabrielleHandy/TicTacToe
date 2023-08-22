@@ -53,7 +53,7 @@ class Player{
     save(){
         let statsArray = []
         localStorage["playerName"] = this.name
-        for(let stat in Object.values(this.stats)){
+        for(let stat of Object.values(this.stats)){
             
             
             statsArray.push(stat)
@@ -657,11 +657,11 @@ nameChangeForm.addEventListener("submit", (e)=>{
     
     if(nameChangeCheckBoxs[0].checked){
         playerOne.changeName(name)
-        playerOne.statElements[0] = playerOne.name
+        playerOne.statElements[0].innerText = playerOne.name
         playerTurn.id === "playerOne"?playerTurn.innerText=playerOne.name:playerTurn.id = playerTurn.id
     }else if(nameChangeCheckBoxs[1].checked){
         playerTwo.changeName(name)
-        playerTwo.statElements[0] = playerTwo.name
+        playerTwo.statElements[0].innerText = playerTwo.name
         playerTurn.id === "playerTwo"?playerTurn.innerText=playerTwo.name:playerTurn.id = playerTurn.id
     }else(
         alert("Please Chose a player")
