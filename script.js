@@ -64,10 +64,10 @@ class Player{
     load(){
         this.name = localStorage['playerName']
         let tempArray = localStorage.playerStats.split(",")
-        this.stats = {win:tempArray[0], 
-                        loss: tempArray[1],
-                        tie:tempArray[2], 
-                        gamesPlayed:tempArray[3]}
+        this.stats = {win:parseInt(tempArray[0]), 
+                        loss: parseInt(tempArray[1]),
+                        tie: parseInt(tempArray[2]), 
+                        gamesPlayed:parseInt(tempArray[3])}
 
         changeDesign(localStorage['theme'])
     }
