@@ -29,16 +29,16 @@ class Player{
     }
     updateStats(outcome = "tie"){
         if (outcome === "W") {
-            this.stats.win++
+            this.stats.win += 1
         } else if(outcome==="L") {
-            this.stats.lose++
+            this.stats.loss +=1 
         }else{
-            this.stats.tie++
+            this.stats.tie += 1
         }
 
         this.stats.gamesPlayed++
         this.save()
-        this.displayStats
+        this.displayStats()
         
     }
     displayStats(){
