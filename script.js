@@ -51,13 +51,23 @@ class Player{
         
     }
     save(){
+        let statsArray = []
         localStorage["playerName"] = this.name
-        localStorage["playerStats"] = this.stats
+        for(let stat in Object.values(this.stats)){
+            
+            
+            statsArray.push(stat)
+        }
+        localStorage["playerStats"] = statsArray
         localStorage["theme"] = this.theme
     }  
     load(){
         this.name = localStorage['playerName']
-        this.stats = localStorage['playerStats']
+        let tempArray = localStorage.playerStats.split(",")
+        this.stats = {win:tempArray[0], 
+                        loss: tempArray[1],
+                        tie:tempArray[2], 
+                        gamesPlayed:tempArray[3]}
 
         changeDesign(localStorage['theme'])
     }
