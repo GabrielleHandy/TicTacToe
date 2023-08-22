@@ -51,12 +51,15 @@ class Player{
         
     }
     save(){
+        if(this.playerNum === 2){
+            return
+        }
         let statsArray = []
         localStorage["playerName"] = this.name
         for(let stat of Object.values(this.stats)){
             
             
-            statsArray.push(stat)
+            statsArray.push(Object.values(playerOne.stats)[stat])
         }
         localStorage["playerStats"] = statsArray
         localStorage["theme"] = this.theme
