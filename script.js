@@ -6,7 +6,7 @@ class Player{
         this.icon
         this.stats = {win:0, loss: 0,tie:0, gamesPlayed:0}
         this.statElements
-        this.theme = 1
+        this.theme = "color1"
         this.setIcon()
 
         
