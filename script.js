@@ -492,6 +492,7 @@ class Board{
 }
 //--------------------INITIALIZED ELEMENTS AND VARIABLE ON GAME START UP -----------
 const aiBtn = document.querySelector("#AI")
+const humanBtn = document.querySelector("#Human")
 const bodyEl = document.querySelector("body")
 const ticTacToe = document.querySelector("#ticTacBoard")
 const result = document.querySelector("#results")
@@ -662,20 +663,33 @@ nameChangeForm.addEventListener("submit", (e)=>{
         playerOne.changeName(name)
         playerOne.statElements[0].innerText = playerOne.name
         playerTurn.id === "playerOne"?playerTurn.innerText=playerOne.name:playerTurn.id = playerTurn.id
+        alert("Name Changed Suceesfully")
     }else if(nameChangeCheckBoxs[1].checked){
         playerTwo.changeName(name)
         playerTwo.statElements[0].innerText = playerTwo.name
         playerTurn.id === "playerTwo"?playerTurn.innerText=playerTwo.name:playerTurn.id = playerTurn.id
+        alert("Name Changed Suceesfully")
     }else(
         alert("Please Chose a player")
     )
 
-
+    
 })
 aiBtn.addEventListener("click", ()=>{
-
-    
+    if(gameBoard.remainingMoves < 9){
+        gameBoard.clearBoard()
+    }
+    alert("AI activated")
     playerTwo = new AiPlayer()
+    playerTwo.statElements = [player2Name, player2Wins,player2loss,player2ties, player2totalGames]
+    playerTwo.displayStats()
+})
+humanBtn.addEventListener("click", ()=>{
+    if(gameBoard.remainingMoves < 9){
+        gameBoard.clearBoard()
+    }
+    alert("Human mode activated")
+    playerTwo = new Player(2)
     playerTwo.statElements = [player2Name, player2Wins,player2loss,player2ties, player2totalGames]
     playerTwo.displayStats()
 })
